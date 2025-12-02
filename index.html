@@ -3,25 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modal Iframe with Pop Animation</title>
+    <title>Modal Iframe with Parallax Background</title>
     <style>
-        /* --- General Reset and Full-Screen Background Styles --- */
+        /* --- General Reset --- */
         html, body {
             height: 100%;
             width: 100%;
             margin: 0;
             padding: 0;
-            overflow: hidden; /* No scrolling allowed on the main page */
-            background-color: #333; /* Fallback color */
+            overflow: hidden; 
+            background-color: #333;
         }
 
-        body {
-            /* Replace with your image path/URL */
-            background-image: url('./asset/background.png'); 
+        /* --- Parallax Background Container --- */
+        #background-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* Adds smooth transition for the movement effect */
+            transition: transform 0.1s linear; 
+            /* Set a perspective for correct 3D rotation effects */
+            perspective: 1000px; 
+        }
+
+        #background-image {
+            width: 100%;
+            height: 100%;
+            background-image: url('./asset/background.png'); /* Replace with your image path/URL */
             background-repeat: no-repeat;
             background-position: center;
             background-size: cover;
-            position: relative; 
         }
 
         /* --- Button Styles (Fixed bottom-right, always visible) --- */
@@ -35,7 +48,7 @@
             color: white;
             border: none;
             border-radius: 5px;
-            z-index: 30; /* Ensures the button is above everything else */
+            z-index: 30; 
         }
         
         #toggle-button:focus-visible {
@@ -46,13 +59,12 @@
         /* --- Iframe Container (Modal Window) Styles --- */
         #iframe-container {
             position: fixed; 
-            /* Centering trick using top/left and transform */
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%) scale(0.5) rotateX(45deg); /* Start smaller and tilted */
+            transform: translate(-50%, -50%) scale(0.5) rotateX(45deg); 
             
-            width: 800px;  /* Max width for the modal */
-            height: 500px; /* Fixed height for the modal */
+            width: 800px;  
+            height: 500px; 
             max-width: 90vw;
             max-height: 90vh;
             background-color: white; 
@@ -60,24 +72,21 @@
             border-radius: 8px;
             overflow: hidden; 
 
-            /* Hide entirely until visible class is added */
             opacity: 0;
-            pointer-events: none; /* Prevents interaction when hidden */
+            pointer-events: none; 
             
-            /* Cooler transition property with a custom easing function */
             transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease-out;
 
             z-index: 20; 
         }
 
-        /* Class added by JavaScript to make it visible */
         #iframe-container.is-visible {
-            transform: translate(-50%, -50%) scale(1) rotateX(0deg); /* Full size, no tilt */
+            transform: translate(-50%, -50%) scale(1) rotateX(0deg); 
             opacity: 1;
-            pointer-events: auto; /* Allows interaction when visible */
+            pointer-events: auto; 
         }
 
-        /* --- Optional: Add a backdrop/overlay behind the modal --- */
+        /* --- Backdrop Overlay --- */
         #backdrop-overlay {
             position: fixed;
             top: 0;
@@ -102,10 +111,16 @@
             height: 100%;
             border: none; 
             allow: "fullscreen";
+            /* src: "YOUR_URL_HERE"; */ /* Defined in HTML now */
         }
     </style>
 </head>
 <body>
+    
+    <!-- New background container for parallax -->
+    <div id="background-container">
+        <div id="background-image"></div>
+    </div>
 
     <div id="backdrop-overlay"></div>
 
@@ -118,12 +133,12 @@
     </div>
 
     <script>
+        // --- Modal Toggle Script (Existing function) ---
         function toggleIframe() {
             const container = document.getElementById('iframe-container');
             const button = document.getElementById('toggle-button');
             const backdrop = document.getElementById('backdrop-overlay');
             
-            // Toggle visibility classes on both the container and the backdrop
             container.classList.toggle('is-visible');
             backdrop.classList.toggle('is-visible');
 
@@ -137,6 +152,31 @@
                 button.setAttribute('aria-expanded', 'false');
             }
         }
+
+        // --- Parallax Effect Script (New Functionality) ---
+        const backgroundContainer = document.getElementById('background-container');
+        const sensitivity = 0.05; // Controls how much the image moves (adjust lower for less movement)
+        const maxTilt = 2; // Maximum rotation in degrees
+
+        document.addEventListener('mousemove', (e) => {
+            // Get center point of the screen
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+
+            // Calculate offset from center (-1 to 1 range)
+            const offsetX = (e.clientX - centerX) * sensitivity;
+            const offsetY = (e.clientY - centerY) * sensitivity;
+            
+            // Calculate tilt based on mouse position
+            const tiltY = (e.clientX - centerX) / centerX * maxTilt;
+            const tiltX = (centerY - e.clientY) / centerY * maxTilt;
+
+
+            // Apply the 3D transforms
+            backgroundContainer.style.transform = 
+                `translate3d(${offsetX}px, ${offsetY}px, 0px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+        });
+
     </script>
 </body>
 </html>
