@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modal Iframe with Floating Decor</title>
+    <title>Modal Iframe with Integrated Floating Decor</title>
     <style>
         /* --- General Reset --- */
         html, body {
@@ -23,41 +23,7 @@
             background-size: cover;
             position: relative; 
         }
-
-        /* --- Decorative Images Container --- */
-        /* This container holds the floating elements */
-        #decor-container {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none; /* Allows clicks to pass through to the background */
-            z-index: 5; /* Behind the modal and button */
-        }
-
-        .decor-image {
-            position: absolute;
-            /* Start them off at various fixed positions */
-            transition: transform 0.1s linear; /* Smooth reaction to mouse move */
-            pointer-events: none; /* Ensures they can't be clicked */
-        }
-
-        /* Define specific sizes and starting positions for your images */
-        #decor-image-1 {
-            width: 150px;
-            top: 10%;
-            left: 5%;
-        }
-
-        #decor-image-2 {
-            width: 80px;
-            bottom: 15%;
-            right: 10%;
-        }
         
-        /* Add more IDs/classes for more images if needed */
-
         /* --- Button Styles --- */
         #toggle-button {
             position: fixed; 
@@ -82,16 +48,19 @@
             position: fixed; 
             top: 50%;
             left: 50%;
+            /* Note: overflow: visible is needed here so the floating images aren't cropped by the container edges */
+            overflow: visible; 
             transform: translate(-50%, -50%) scale(0.5) rotateX(45deg); 
             
             width: 800px;  
             height: 500px; 
             max-width: 90vw;
             max-height: 90vh;
+            
+            /* The main iframe window appearance */
             background-color: white; 
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             border-radius: 8px;
-            overflow: hidden; 
 
             opacity: 0;
             pointer-events: none; 
@@ -105,6 +74,25 @@
             transform: translate(-50%, -50%) scale(1) rotateX(0deg); 
             opacity: 1;
             pointer-events: auto; 
+        }
+        
+        /* --- Decorative Images Styles (Contained within #iframe-container) --- */
+        .decor-image {
+            position: absolute;
+            transition: transform 0.1s linear; /* Smooth reaction to mouse move */
+            pointer-events: none; /* Ensures they can't be clicked */
+        }
+
+        #decor-image-1 {
+            width: 150px;
+            top: -50px; /* Positioned slightly outside the modal window's top edge */
+            left: -50px;
+        }
+
+        #decor-image-2 {
+            width: 80px;
+            bottom: -30px; /* Positioned slightly outside the modal window's bottom edge */
+            right: -40px;
         }
 
         /* --- Backdrop Overlay --- */
@@ -132,17 +120,11 @@
             height: 100%;
             border: none; 
             allow: "fullscreen";
+            /* We make the iframe element fill 100% of the container space inside the modal */
         }
     </style>
 </head>
 <body>
-
-    <!-- Container for floating images -->
-    <div id="decor-container">
-        <!-- REPLACE src ATTRIBUTES WITH YOUR ACTUAL IMAGE PATHS (e.g., abstract-shape.png) -->
-        <img src="path/to/your/image1.png" alt="Floating decor 1" class="decor-image" id="decor-image-1">
-        <img src="path/to/your/image2.png" alt="Floating decor 2" class="decor-image" id="decor-image-2">
-    </div>
 
     <div id="backdrop-overlay"></div>
 
@@ -151,11 +133,16 @@
     </button>
 
     <div id="iframe-container">
+        <!-- REPLACE src ATTRIBUTES WITH YOUR ACTUAL IMAGE PATHS (e.g., abstract-shape.png) -->
+        <img src="path/to/your/image1.png" alt="Floating decor 1" class="decor-image" id="decor-image-1">
+        <img src="path/to/your/image2.png" alt="Floating decor 2" class="decor-image" id="decor-image-2">
+
+        <!-- The iframe is within the container -->
         <iframe id="content-frame" src="YOUR_URL_HERE" title="External Content Frame"></iframe>
     </div>
 
     <script>
-        // --- Modal Toggle Script (Existing function) ---
+        // --- Modal Toggle Script ---
         function toggleIframe() {
             const container = document.getElementById('iframe-container');
             const button = document.getElementById('toggle-button');
@@ -177,19 +164,19 @@
 
         // --- Parallax Effect Script for Decor Images ---
         const decorImages = document.querySelectorAll('.decor-image');
-        const parallaxStrength = 20; // How many pixels the images move (adjust for sensitivity)
+        // This is a subtle effect since they are relatively close to the user's focus
+        const parallaxStrength = 10; 
 
         document.addEventListener('mousemove', (e) => {
             decorImages.forEach(image => {
-                // Calculate movement based on mouse position relative to center
+                // Calculate movement based on mouse position relative to center of screen
                 const offsetX = (e.clientX / window.innerWidth - 0.5) * parallaxStrength;
                 const offsetY = (e.clientY / window.innerHeight - 0.5) * parallaxStrength;
 
-                // Apply translation, ensuring images move *with* the cursor slightly
+                // Apply translation
                 image.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
             });
         });
     </script>
 </body>
 </html>
-
