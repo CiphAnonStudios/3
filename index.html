@@ -77,17 +77,17 @@
         }
 
         #decor-image-1 {
-            /* MADE MUCH LARGER */
-            width: 750px; 
-            top: -100px; /* Adjusted position for larger size */
-            left: -100px;
+            /* REALLY LARGE SIZE */
+            width: 500px; 
+            top: -200px; /* Positioned far outside the top edge */
+            left: -250px;
         }
 
         #decor-image-2 {
-            /* MADE MUCH LARGER */
-            width: 750px; 
-            bottom: -80px; /* Adjusted position for larger size */
-            right: -80px;
+            /* REALLY LARGE SIZE */
+            width: 400px; 
+            bottom: -150px; /* Positioned far outside the bottom edge */
+            right: -200px;
         }
 
         /* --- Backdrop Overlay --- */
@@ -132,7 +132,6 @@
         <iframe id="content-frame" src="YOUR_URL_HERE" title="External Content Frame"></iframe>
         
         <!-- The images are also within the container but behind the iframe -->
-        <!-- Ensure these paths are correct in your GitHub asset folder -->
         <img src="./asset/iframeimage1.png" alt="Floating decor 1" class="decor-image" id="decor-image-1">
         <img src="./asset/iframeimage2.png" alt="Floating decor 2" class="decor-image" id="decor-image-2">
     </div>
@@ -160,7 +159,7 @@
 
         // --- Parallax Effect Script for Decor Images ---
         const decorImages = document.querySelectorAll('.decor-image');
-        const parallaxStrength = 25; // Increased strength for larger images
+        const parallaxStrength = 40; // Increased strength for really large images/movement
 
         document.addEventListener('mousemove', (e) => {
             decorImages.forEach(image => {
@@ -172,4 +171,3 @@
     </script>
 </body>
 </html>
-
