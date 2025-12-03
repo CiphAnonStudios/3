@@ -5,168 +5,132 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modal Iframe with Integrated Floating Decor</title>
     <style>
-        /* --- General Reset --- */
+        /* --- General Reset & Background Styles --- */
         html, body {
-            height: 100%;
-            width: 100%;
-            margin: 0;
-            padding: 0;
-            overflow: hidden; 
+            height: 100%; width: 100%; margin: 0; padding: 0; overflow: hidden; 
             background-color: #333;
-        }
-
-        body {
-            /* Replace with your main background image path/URL */
-            background-image: url('./asset/background1.png'); 
+            background-image: url('./asset/background.png'); 
             background-repeat: no-repeat;
             background-position: center;
             background-size: cover;
             position: relative; 
         }
+
+        /* --- Global Button Styling Improvements --- */
+        .action-button, .iframe-control-btn {
+            /* Smooth transitions for hover/active states */
+            transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        /* Hover effect: Subtle lift and shadow increase */
+        .action-button:hover, .iframe-control-btn:hover {
+            background-color: #555;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transform: translateY(-1px);
+        }
+
+        /* Active effect: Simulates a button press */
+        .action-button:active, .iframe-control-btn:active {
+            transform: translateY(1px); /* Pushes button down 1px */
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            background-color: #222;
+        }
         
+        .action-button:focus-visible, .iframe-control-btn:focus-visible {
+            outline: 2px solid dodgerblue; 
+            outline-offset: 2px;
+        }
+
+
         /* --- Main Toggle Button Styles (Fixed to the bottom right) --- */
         #toggle-button {
             position: fixed; 
-            bottom: 20px;    
-            right: 20px;     
-            padding: 10px 20px;
-            cursor: pointer;
-            background-color: #333;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            z-index: 40; /* Placed above everything */
+            bottom: 20px; right: 20px; padding: 10px 20px;
+            background-color: #333; color: white;
+            z-index: 40; 
         }
 
         /* --- Iframe Container (Modal Window) Styles --- */
         #iframe-container {
-            position: fixed; 
-            top: 50%;
-            left: 50%;
-            overflow: visible; /* Keeps large images from being cropped */
+            position: fixed; top: 50%; left: 50%; overflow: visible; 
             transform: translate(-50%, -50%) scale(0.5) rotateX(45deg); 
-            
-            width: 800px;  
-            height: 500px; 
-            max-width: 90vw;
-            max-height: 90vh;
-            
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            border-radius: 8px;
-
-            opacity: 0;
-            pointer-events: none; 
-            
-            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease-out;
-
-            z-index: 20; 
-
-            /* Added transition for native fullscreen API */
+            width: 800px; height: 500px; max-width: 90vw; max-height: 90vh;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); border-radius: 8px;
+            opacity: 0; pointer-events: none; 
             transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease-out, width 0s, height 0s, top 0s, left 0s;
-
+            z-index: 20; 
         }
-
         #iframe-container.is-visible {
             transform: translate(-50%, -50%) scale(1) rotateX(0deg); 
-            opacity: 1;
-            pointer-events: auto; 
+            opacity: 1; pointer-events: auto; 
         }
         
         /* Styles applied when in native browser fullscreen mode */
         #iframe-container:-webkit-full-screen { width: 100% !important; height: 100% !important; top: 0 !important; left: 0 !important; transform: none !important; box-shadow: none !important; border-radius: 0 !important; }
         #iframe-container:full-screen { width: 100% !important; height: 100% !important; top: 0 !important; left: 0 !important; transform: none !important; box-shadow: none !important; border-radius: 0 !important; }
 
-
-        /* --- Decorative Images Styles (Contained within #iframe-container) --- */
-        .decor-image {
-            position: absolute;
-            transition: transform 0.1s linear; 
-            pointer-events: none; 
-            z-index: 5; /* Z-index set lower than the iframe */
-        }
-       #decor-image-1 { width: 100vh; top: -145px; left: -190px; }
-       #decor-image-2 { width: 80vh; bottom: -130px; right: -170px; }
+        /* --- Decorative Images Styles --- */
+        .decor-image { position: absolute; transition: transform 0.1s linear; pointer-events: none; z-index: 5; }
+        #decor-image-1 { width: 100vh; top: -145px; left: -190px; }
+        #decor-image-2 { width: 80vh; bottom: -130px; right: -170px; }
 
         /* --- Backdrop Overlay --- */
         #backdrop-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.4s ease;
-            z-index: 15;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7); opacity: 0; pointer-events: none;
+            transition: opacity 0.4s ease; z-index: 15;
         }
 
         /* --- Iframe Element Styles --- */
         #content-frame {
-            width: 100%;
-            height: 100%;
-            border: none; 
-            allow: "fullscreen"; /* Required for JS fullscreen API */
-            background-color: white; 
-            position: relative;
-            z-index: 10; /* Z-index set higher than the images */
-            border-radius: 8px; 
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+            width: 100%; height: 100%; border: none; allow: "fullscreen";
+            background-color: white; position: relative; z-index: 10; 
+            border-radius: 8px; box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
         }
 
-        /* --- OVERLAID BUTTONS CONTAINER --- */
+        /* --- OVERLAID BUTTONS CONTAINER & STYLES --- */
         #iframe-controls {
-            position: absolute; /* Positioned relative to the #iframe-container */
-            top: 10px;          /* 10px from the top edge of the iframe window */
-            right: 10px;        /* 10px from the right edge */
-            display: flex;
-            gap: 5px;
-            z-index: 15; /* Above images, below main toggle button */
+            position: absolute; top: 10px; right: 10px; display: flex; gap: 5px;
+            z-index: 15;
         }
         .iframe-control-btn {
-            padding: 5px 10px;
-            background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
+            padding: 5px 10px; background-color: rgba(0, 0, 0, 0.6); color: white;
             font-size: 12px;
         }
-        .iframe-control-btn:hover { background-color: rgba(0, 0, 0, 0.8); }
-
     </style>
 </head>
 <body>
 
     <div id="backdrop-overlay"></div>
 
-    <button id="toggle-button" onclick="toggleIframe()" aria-expanded="false" aria-controls="iframe-container">
+    <button id="toggle-button" class="action-button" onclick="toggleIframe()" aria-expanded="false" aria-controls="iframe-container">
         Show Iframe Modal
     </button>
 
     <div id="iframe-container">
         
-        <!-- --- OVERLAID BUTTONS ADDED HERE --- -->
         <div id="iframe-controls">
             <button class="iframe-control-btn" onclick="reloadIframe()">Reload</button>
             <button class="iframe-control-btn" onclick="toggleFullscreen()">Fullscreen</button>
         </div>
         
-        <iframe id="content-frame" src="https://flamepass.com" title="External Content Frame"></iframe>
+        <iframe id="content-frame" src="YOUR_URL_HERE" title="External Content Frame"></iframe>
         
         <img src="./asset/iframeimage1.png" alt="Floating decor 1" class="decor-image" id="decor-image-1">
         <img src="./asset/iframeimage2.png" alt="Floating decor 2" class="decor-image" id="decor-image-2">
     </div>
 
     <script>
-        // Get references to elements
         const iframeEl = document.getElementById('content-frame');
         const iframeContainerEl = document.getElementById('iframe-container');
         const toggleButtonEl = document.getElementById('toggle-button');
         const backdropEl = document.getElementById('backdrop-overlay');
         const decorImages = document.querySelectorAll('.decor-image');
 
-        // --- Action Functions ---
         function toggleIframe() {
             iframeContainerEl.classList.toggle('is-visible');
             backdropEl.classList.toggle('is-visible');
@@ -176,32 +140,27 @@
         }
 
         function reloadIframe() {
-            iframeEl.src = iframeEl.src; // Reloads the source document within the iframe
+            iframeEl.src = iframeEl.src; 
         }
 
         function toggleFullscreen() {
             if (!document.fullscreenElement) {
-                // Request fullscreen for the container element
                 if (iframeContainerEl.requestFullscreen) {
                     iframeContainerEl.requestFullscreen();
-                } else if (iframeContainerEl.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
+                } else if (iframeContainerEl.webkitRequestFullscreen) {
                     iframeContainerEl.webkitRequestFullscreen();
                 }
             } else {
-                // Exit fullscreen if already in it
                 if (document.exitFullscreen) {
                     document.exitFullscreen();
-                } else if (document.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+                } else if (document.webkitExitFullscreen) {
                     document.webkitExitFullscreen();
                 }
             }
         }
 
-        // --- Parallax Effect Script for Decor Images ---
         const parallaxStrength = 60; 
-
         document.addEventListener('mousemove', (e) => {
-            // Only run parallax if the iframe modal is visible and not in native fullscreen mode
             if (iframeContainerEl.classList.contains('is-visible') && !document.fullscreenElement) {
                  decorImages.forEach(image => {
                     const offsetX = (e.clientX / window.innerWidth - 0.5) * parallaxStrength;
