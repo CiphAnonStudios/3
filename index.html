@@ -9,7 +9,8 @@
         html, body {
             height: 100%; width: 100%; margin: 0; padding: 0; overflow: hidden; 
             background-color: #333;
-            background-image: url('./asset/background1.png'); 
+            /* Using reliable placeholder URL for the main background */
+            background-image: url('picsum.photos'); 
             background-repeat: no-repeat;
             background-position: center;
             background-size: cover;
@@ -18,40 +19,17 @@
 
         /* --- Global Button Styling Improvements --- */
         .action-button, .iframe-control-btn {
-            /* Smooth transitions for hover/active states */
             transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
-            cursor: pointer;
-            border: none;
-            border-radius: 5px;
-            font-weight: bold;
+            cursor: pointer; border: none; border-radius: 5px; font-weight: bold;
         }
-
-        /* Hover effect: Subtle lift and shadow increase */
-        .action-button:hover, .iframe-control-btn:hover {
-            background-color: #555;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            transform: translateY(-1px);
-        }
-
-        /* Active effect: Simulates a button press */
-        .action-button:active, .iframe-control-btn:active {
-            transform: translateY(1px); /* Pushes button down 1px */
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-            background-color: #222;
-        }
-        
-        .action-button:focus-visible, .iframe-control-btn:focus-visible {
-            outline: 2px solid dodgerblue; 
-            outline-offset: 2px;
-        }
-
+        .action-button:hover, .iframe-control-btn:hover { background-color: #555; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); transform: translateY(-1px); }
+        .action-button:active, .iframe-control-btn:active { transform: translateY(1px); background-color: #222; }
+        .action-button:focus-visible, .iframe-control-btn:focus-visible { outline: 2px solid dodgerblue; outline-offset: 2px; }
 
         /* --- Main Toggle Button Styles (Fixed to the bottom right) --- */
         #toggle-button {
-            position: fixed; 
-            bottom: 20px; left: 20px; padding: 10px 20px;
-            background-color: #333; color: white;
-            z-index: 40; 
+            position: fixed; bottom: 20px; left: 20px; padding: 10px 20px;
+            background-color: #333; color: white; z-index: 40; 
         }
 
         /* --- Iframe Container (Modal Window) Styles --- */
@@ -61,15 +39,13 @@
             width: 800px; height: 500px; max-width: 90vw; max-height: 90vh;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); border-radius: 8px;
             opacity: 0; pointer-events: none; 
-            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease-out, width 0s, height 0s, top 0s, left 0s;
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease-out;
             z-index: 20; 
         }
         #iframe-container.is-visible {
             transform: translate(-50%, -50%) scale(1) rotateX(0deg); 
             opacity: 1; pointer-events: auto; 
         }
-        
-        /* Styles applied when in native browser fullscreen mode */
         #iframe-container:-webkit-full-screen { width: 100% !important; height: 100% !important; top: 0 !important; left: 0 !important; transform: none !important; box-shadow: none !important; border-radius: 0 !important; }
         #iframe-container:full-screen { width: 100% !important; height: 100% !important; top: 0 !important; left: 0 !important; transform: none !important; box-shadow: none !important; border-radius: 0 !important; }
 
@@ -94,48 +70,46 @@
 
         /* --- OVERLAID BUTTONS CONTAINER & STYLES --- */
         #iframe-controls {
-            position: absolute; top: 10px; right: 10px; display: flex; gap: 5px;
-            z-index: 15;
+            position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; z-index: 15;
         }
         .iframe-control-btn {
-            padding: 5px 10px; background-color: rgba(0, 0, 0, 0.6); color: white;
-            font-size: 12px;
+            padding: 5px 10px; background-color: rgba(0, 0, 0, 0.6); color: white; font-size: 12px;
         }
 
-            .move-container {
-        position: relative;
-        cursor: pointer;
-        display: inline-flex; /* Keeps image and text side-by-side */
-        align-items: center;
-        padding: 10px;
-        background-color: #f0f0f0;
-        border: 1px solid #ccc;
-        transition: left 0.5s ease;
-        left: 0;
-        width: 200px;
-        text-align: center;
-        /* Add some margin so it doesn't overlap the main button in the corner */
-        margin-top: 50px;
-        margin-left: 20px;
-    }
+        /* *** FIXES FOR MOVE CONTAINER (the "slider") *** */
+        .move-container {
+            position: relative;
+            cursor: pointer;
+            display: inline-flex; /* Keeps image and text side-by-side */
+            align-items: center;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            transition: left 0.5s ease;
+            left: 0;
+            width: 200px; /* Width of the entire moving box */
+            text-align: center;
+            margin-top: 50px; /* Added margin so it's visible on the page */
+            margin-left: 50px;
+        }
 
-    .move-image {
-        /* FIX: Uncomment the width and height properties to define the image size */
-        width: 50px;
-        height: 50px;
-        margin-right: 10px;
-        object-fit: cover; /* Ensures the image looks good within its 50x50 box */
-    }
+        .move-image {
+            /* FIX: Defined size for the image so it appears correctly */
+            width: 50px;
+            height: 50px; 
+            margin-right: 10px;
+            object-fit: cover; /* Ensures the image looks good within its 50x50 box */
+        }
 
-    .move-text {
-        font-size: 16px;
-        color: #333;
-    }
+        .move-text {
+            font-size: 16px;
+            color: #333;
+        }
 
-    /* Class to be added/removed by JavaScript */
-    .move-right {
-        left: 100px; /* Moves the element 100px to the right when this class is active */
-    }
+        /* Class to be added/removed by JavaScript */
+        .move-right {
+            left: 100px; /* Moves the element 100px to the right when this class is active */
+        }
 
     </style>
 </head>
@@ -156,22 +130,27 @@
         
         <iframe id="content-frame" src="https://flamepass.com" title="External Content Frame"></iframe>
         
-        <img src="./asset/iframeimage1.png" alt="Floating decor 1" class="decor-image" id="decor-image-1">
-        <img src="./asset/iframeimage2.png" alt="Floating decor 2" class="decor-image" id="decor-image-2">
+        <!-- Using reliable placeholder URLs for decor images -->
+        <img src="picsum.photos" alt="Floating decor 1" class="decor-image" id="decor-image-1">
+        <img src="picsum.photos" alt="Floating decor 2" class="decor-image" id="decor-image-2">
     </div>
 
- <div class="move-container" onclick="toggleMovement()" style="height: 100px;">
-        <!-- The img tag remains but will be hidden by CSS -->
-        <img src="./asset/blooketcheats1.png" alt="placeholder image" class="move-image">
+<!-- Main moving container that slides when clicked -->
+<div class="move-container" onclick="toggleMovement()">
+        <!-- Using a reliable placeholder URL for the main moving image -->
+        <img src="picsum.photos" alt="placeholder image" class="move-image">
         <span class="move-text">Click to Move</span>
     </div>
     
     <script>
+        // Select elements at the top of the script
         const iframeEl = document.getElementById('content-frame');
         const iframeContainerEl = document.getElementById('iframe-container');
         const toggleButtonEl = document.getElementById('toggle-button');
         const backdropEl = document.getElementById('backdrop-overlay');
         const decorImages = document.querySelectorAll('.decor-image');
+        // Select the moving container so the JS can find it
+        const moveContainerEl = document.querySelector('.move-container'); 
 
         function toggleIframe() {
             iframeContainerEl.classList.toggle('is-visible');
@@ -201,6 +180,11 @@
             }
         }
 
+        // The function that runs when the div is clicked, causing it to slide
+        function toggleMovement() {
+            moveContainerEl.classList.toggle('move-right'); 
+        }
+
         const parallaxStrength = 60; 
         document.addEventListener('mousemove', (e) => {
             if (iframeContainerEl.classList.contains('is-visible') && !document.fullscreenElement) {
@@ -212,25 +196,6 @@
             }
         });
 
-       // Make sure the toggleMovement function is defined like this:
-    function toggleMovement() {
-        var element = document.querySelector('.move-container');
-        element.classList.toggle('move-right');
-    }
-
-    // Keep the existing mousemove listener (which was cut off in your prompt)
-    const parallaxStrength = 60; 
-    document.addEventListener('mousemove', (e) => {
-        if (iframeContainerEl.classList.contains('is-visible') && !document.fullscreenElement) {
-                decorImages.forEach(image => {
-                const offsetX = (e.clientX / window.innerWidth - 0.5) * parallaxStrength;
-                const offsetY = (e.clientY / window.innerHeight - 0.5) * parallaxStrength;
-                image.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
-            });
-        }
-    });
     </script>
 </body>
 </html>
-
-
