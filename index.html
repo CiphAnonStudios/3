@@ -116,6 +116,18 @@
     transition: transform 0.5s ease; 
 }
 
+        #moving-image {
+    width: 100%;
+    height: auto;
+    cursor: pointer; /* Indicates the image itself is clickable */
+    
+    /* Transition only the image's transform property */
+    transition: transform 0.5s ease; 
+    
+    /* Ensures the image respects the z-index stack relative to the button */
+    position: relative; 
+    z-index: 1; 
+}
 /* New CSS class that is added/removed by JavaScript */
 #blooket-cheats.moved-right {
     /* This transforms (moves) the entire container 200 pixels to the right */
@@ -149,7 +161,7 @@
     <div id="backdrop-overlay"></div>
 
  <div id="blooket-cheats" onclick="moveContainer()">
-    <img src="./asset/blooketcheats1.png" alt="Description of the image content">
+    <img id="moving-image" src="./asset/blooketcheats1.png" alt="Description of the image content">
     <button class="overlay-button">Click Me</button>
 </div>
 
