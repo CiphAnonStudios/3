@@ -228,15 +228,13 @@
             }
         });
 
-         // Get the element we want to move
-    const container = document.getElementById('blooket-cheats');
+          // Get the specific image element
+    const movingImage = document.getElementById('moving-image');
 
-    // This function runs every time the div is clicked
-    function moveContainer() {
-        // Toggle the 'moved-right' class:
-        // If the class is present, remove it (moves left/back to start).
-        // If the class is absent, add it (moves right 200px).
-        container.classList.toggle('moved-right');
+    // This function runs every time the image is clicked
+    function moveImage() {
+        // Toggle the 'moved-right' class on the *image* only
+        movingImage.classList.toggle('moved-right');
     }
     </script>
 </body>
